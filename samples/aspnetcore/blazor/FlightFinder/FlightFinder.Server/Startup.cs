@@ -33,11 +33,11 @@ namespace FlightFinder.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBlazorDebugging();
+                //app.UseBlazorDebugging();
             }
 
             app.UseStaticFiles();
-            app.UseClientSideBlazorFiles<Client.Startup>();
+            app.UseBlazorFrameworkFiles();
 
             app.UseRouting();
             app.UseGrpcWeb();
@@ -45,7 +45,7 @@ namespace FlightFinder.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<FlightDataService>().EnableGrpcWeb();
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

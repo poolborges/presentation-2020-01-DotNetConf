@@ -3,7 +3,7 @@ using FlightFinder.Shared;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Builder;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
@@ -34,9 +34,9 @@ namespace FlightFinder.Client
             });
         }
 
-        public void Configure(IComponentsApplicationBuilder app)
+        public void Configure(RootComponentMappingCollection app)
         {
-            app.AddComponent<Main>("body");
+            app.Add<Main>("body");
         }
     }
 }

@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace FlightFinder.Server
 {
@@ -11,15 +12,24 @@ namespace FlightFinder.Server
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(new ConfigurationBuilder()
-                    .AddCommandLine(args)
-                    .Build())
-                .UseStartup<Startup>()
-                .Build();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostContext, confBuilder) =>
+                {
+                    var env = hostContext.HostingEnvironment;
+                    confBuilder.AddJsonFile(path: "appSettings.json", optional: true, reloadOnChange: true);
+                    confBuilder.AddJsonFile(path: $"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                    confBuilder.AddEnvironmentVariables();
+                    confBuilder.AddCommandLine(args);
+
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStaticWebAssets();
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }
